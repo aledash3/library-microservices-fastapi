@@ -13,11 +13,11 @@ from fastapi.openapi.docs import get_swagger_ui_html
 
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "port": os.getenv("DB_PORT"),
-    "database": os.getenv("POSTGRES_DB"),
-    "user": os.getenv("POSTGRES_USER"),
-    "password": os.getenv("POSTGRES_PASSWORD"),
+    "host": os.getenv("DB_HOST", "db"),
+    "port": os.getenv("DB_PORT", "5432"),
+    "database": os.getenv("POSTGRES_DB", "library_db"),
+    "user": os.getenv("POSTGRES_USER", "library_user"),
+    "password": os.getenv("POSTGRES_PASSWORD", "library_password_secure123"),
 }
 
 
@@ -34,14 +34,27 @@ class OrderUpdate(BaseModel):
 
 
 def get_connection():
-    for attempt in range(10):
+    max_retries = int(os.getenv("DB_MAX_RETRIES", "10"))
+    retry_delay = float(os.getenv("DB_RETRY_DELAY", "3"))
+
+    for attempt in range(max_retries):
         try:
             return psycopg2.connect(**DB_CONFIG)
         except OperationalError:
-            print("Esperando a PostgreSQL...")
-            time.sleep(3)
+            if attempt == max_retries - 1:
+                raise
+            print(f"Esperando a PostgreSQL... ({attempt + 1}/{max_retries})")
+            time.sleep(retry_delay)
 
     raise Exception("No se pudo conectar a PostgreSQL")
+
+
+def table_exists(conn, table_name: str) -> bool:
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT to_regclass(%s) AS table_name;", (table_name,))
+        result = cur.fetchone()
+
+    return result["table_name"] is not None
 
 
 def init_db():
@@ -107,13 +120,14 @@ def get_order_detail(conn, order_id: int):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    if os.getenv("SKIP_DB_INIT", "false").lower() != "true":
+        init_db()
     yield
 
 
 app = FastAPI(
     title="Orders Service",
-    description="Microservicio CRUD para la gestiÃ³n de Ã³rdenes.",
+    description="Microservicio CRUD para la gestión de órdenes.",
     version="1.0.0",
     docs_url=None,
     redoc_url=None,
@@ -124,12 +138,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 @app.get("/docs", include_in_schema=False)
 def custom_swagger_ui():
     return get_swagger_ui_html(
         openapi_url="openapi.json",
         title="Orders Service - Swagger UI"
     )
+
 
 @app.get("/health")
 def health():
@@ -261,7 +277,7 @@ def delete_order(order_id: int):
         if existing_order is None:
             raise HTTPException(status_code=404, detail="Orden no encontrada")
 
-        with conn.cursor() as cur:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("DELETE FROM orders WHERE id = %s;", (order_id,))
 
         conn.commit()

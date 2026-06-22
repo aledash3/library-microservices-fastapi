@@ -13,31 +13,36 @@ from fastapi.openapi.docs import get_swagger_ui_html
 
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "port": os.getenv("DB_PORT"),
-    "database": os.getenv("POSTGRES_DB"),
-    "user": os.getenv("POSTGRES_USER"),
-    "password": os.getenv("POSTGRES_PASSWORD"),
+    "host": os.getenv("DB_HOST", "db"),
+    "port": os.getenv("DB_PORT", "5432"),
+    "database": os.getenv("POSTGRES_DB", "library_db"),
+    "user": os.getenv("POSTGRES_USER", "library_user"),
+    "password": os.getenv("POSTGRES_PASSWORD", "library_password_secure123"),
 }
 
 
 class UserCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=120)
-    email: str = Field(..., min_length=3, max_length=160)
+    email: str = Field(..., min_length=3, max_length=160, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 class UserUpdate(BaseModel):
     name: str = Field(..., min_length=1, max_length=120)
-    email: str = Field(..., min_length=3, max_length=160)
+    email: str = Field(..., min_length=3, max_length=160, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def get_connection():
-    for attempt in range(10):
+    max_retries = int(os.getenv("DB_MAX_RETRIES", "10"))
+    retry_delay = float(os.getenv("DB_RETRY_DELAY", "3"))
+
+    for attempt in range(max_retries):
         try:
             return psycopg2.connect(**DB_CONFIG)
         except OperationalError:
-            print("Esperando a PostgreSQL...")
-            time.sleep(3)
+            if attempt == max_retries - 1:
+                raise
+            print(f"Esperando a PostgreSQL... ({attempt + 1}/{max_retries})")
+            time.sleep(retry_delay)
 
     raise Exception("No se pudo conectar a PostgreSQL")
 
@@ -70,12 +75,14 @@ def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    if os.getenv("SKIP_DB_INIT", "false").lower() != "true":
+        init_db()
     yield
+
 
 app = FastAPI(
     title="Users Service",
-    description="Microservicio CRUD para la gestiÃ³n de usuarios.",
+    description="Microservicio CRUD para la gestión de usuarios.",
     version="1.0.0",
     docs_url=None,
     redoc_url=None,
@@ -93,6 +100,7 @@ def custom_swagger_ui():
         openapi_url="openapi.json",
         title="Users Service - Swagger UI"
     )
+
 
 @app.get("/health")
 def health():
@@ -153,7 +161,7 @@ def create_user(user: UserCreate):
 
     except IntegrityError:
         conn.rollback()
-        raise HTTPException(status_code=409, detail="El email ya existe")
+        raise HTTPException(status_code=409, detail="El email ya existe") from None
 
     except Exception:
         conn.rollback()
@@ -187,7 +195,7 @@ def update_user(user_id: int, user: UserUpdate):
 
     except IntegrityError:
         conn.rollback()
-        raise HTTPException(status_code=409, detail="El email ya existe")
+        raise HTTPException(status_code=409, detail="El email ya existe") from None
 
     except HTTPException:
         conn.rollback()
@@ -220,7 +228,7 @@ def delete_user(user_id: int):
                 if total_orders > 0:
                     raise HTTPException(
                         status_code=409,
-                        detail="No se puede eliminar el usuario porque tiene Ã³rdenes asociadas"
+                        detail="No se puede eliminar el usuario porque tiene órdenes asociadas"
                     )
 
             cur.execute(
