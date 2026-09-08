@@ -486,10 +486,10 @@ docker compose up --build --force-recreate -d
 **David Alejandro Cruz Palacios**  
 Computer Science Engineering Student — Universidad Politécnica Salesiana  
 GitHub: [@aledash3](https://github.com/aledash3)  
-*Course: Sistemas Distribuidos (6to Nivel)*
+Course: Distributed Systems (6th Semester)
 
 ---
 
-## 📜 License
+## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
