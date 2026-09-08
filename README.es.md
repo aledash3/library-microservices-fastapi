@@ -1,7 +1,7 @@
 # 🐳 Microservicios de Biblioteca: FastAPI, PostgreSQL y Nginx con Docker Compose
 
 [![CI](https://img.shields.io/github/actions/workflow/status/aledash3/library-microservices-fastapi/ci.yml?branch=main&style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/aledash3/library-microservices-fastapi/actions)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
@@ -16,6 +16,12 @@ Arquitectura de microservicios con FastAPI, persistencia en PostgreSQL, Nginx co
 
 ---
 
+## Alcance y limitaciones
+
+Proyecto académico. Nginx enruta peticiones a un único upstream por servicio; la configuración actual no demuestra balanceo entre réplicas. Los servicios comparten PostgreSQL: simplifica el ejercicio, pero acopla la capa de datos. Las redes internas y el endurecimiento de contenedores no bastan para declarar el sistema listo para producción. Para un despliegue real deben evaluarse autenticación, TLS, monitoreo, respaldos/restauración y pruebas de carga.
+
+CI se ejecuta actualmente en Python 3.11 y 3.12. El workflow y la salida de las pruebas son la referencia; un contador fijo de pruebas no garantiza cobertura.
+
 ## 📌 Descripción General
 
 Este repositorio contiene la implementación de una arquitectura de microservicios contenerizada orientada a la gestión de una biblioteca digital, construida con **Docker Compose**, **FastAPI**, **PostgreSQL** y **Nginx**.
@@ -26,7 +32,7 @@ El sistema está compuesto por tres microservicios desacoplados:
 * `users_service`: Registro y administración de usuarios.
 * `orders_service`: Gestión de préstamos y órdenes vinculando usuarios y libros.
 
-Todos los servicios se ejecutan en contenedores independientes y se comunican a través de redes internas protegidas. La base de datos PostgreSQL permanece estrictamente aislada del host exterior, mientras que **Nginx** actúa como **API Gateway** y reverse proxy inverso, ofreciendo un único punto de entrada unificado y seguro.
+Todos los servicios se ejecutan en contenedores independientes y se comunican a través de redes internas protegidas. La base de datos PostgreSQL permanece estrictamente aislada del host exterior, mientras que **Nginx** actúa como **API Gateway** y reverse proxy inverso, ofreciendo un único punto de entrada HTTP.
 
 El proyecto implementa **operaciones CRUD completas**, documentación interactiva mediante **Swagger UI**, persistencia de datos mediante volúmenes Docker nombrados, control estricto de seguridad en contenedores (`read_only`, `cap_drop: ALL`, usuarios no-root) y una suite completa de pruebas automatizadas con integración continua (CI).
 
@@ -96,7 +102,7 @@ Cliente / Frontend / curl
 ```text
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                 # Pipeline CI GitHub Actions (Python 3.11, 3.12, 3.13)
+│       └── ci.yml                 # Pipeline CI GitHub Actions (Python 3.11, 3.12)
 ├── books_service/
 │   ├── .dockerignore              # Exclusiones de contexto Docker
 │   ├── app.py                     # API FastAPI y lógica de base de datos
@@ -456,7 +462,7 @@ ruff check .
 ```
 
 ### Pipeline de Integración Continua (GitHub Actions)
-Cada `push` o `pull request` en la rama `main` dispara automáticamente el workflow de CI en entornos Ubuntu con **Python 3.11, 3.12 y 3.13**, garantizando máxima compatibilidad y calidad de código.
+Cada `push` o `pull request` en la rama `main` dispara automáticamente el workflow de CI en entornos Ubuntu con **Python 3.11 y 3.12**, garantizando máxima compatibilidad y calidad de código.
 
 ---
 
@@ -483,9 +489,9 @@ docker compose up --build --force-recreate -d
 
 ## 👨‍💻 Autor
 
-**David Alejandro Cruz Palacios**  
-Estudiante de Ingeniería en Ciencias de la Computación — Universidad Politécnica Salesiana  
-GitHub: [@aledash3](https://github.com/aledash3)  
+**David Alejandro Cruz Palacios**
+Estudiante de Ingeniería en Ciencias de la Computación — Universidad Politécnica Salesiana
+GitHub: [@aledash3](https://github.com/aledash3)
 Materia: Sistemas Distribuidos (6to Semestre)
 
 ---

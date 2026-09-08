@@ -1,7 +1,7 @@
 # 🐳 Library Microservices: FastAPI, PostgreSQL & Nginx with Docker Compose
 
 [![CI](https://img.shields.io/github/actions/workflow/status/aledash3/library-microservices-fastapi/ci.yml?branch=main&style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/aledash3/library-microservices-fastapi/actions)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
@@ -10,15 +10,21 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Español](https://img.shields.io/badge/Idioma-Espa%C3%B1ol-orange?style=for-the-badge)](README.es.md)
 
-Enterprise-ready microservices architecture featuring FastAPI, PostgreSQL persistence, Nginx API Gateway routing, and isolated Docker Compose networks.
+Academic microservices project featuring FastAPI, PostgreSQL persistence, Nginx API Gateway routing, and isolated Docker Compose networks.
 
 > 🌐 **Language / Idioma:** English | [Leer documentación en Español](README.es.md)
 
 ---
 
+## Scope and limitations
+
+This is an academic project. Nginx routes requests to one upstream per service; the current configuration does not demonstrate load balancing across replicas. Services share PostgreSQL, a design tradeoff that simplifies the exercise but couples their data layer. Internal Docker networks and container hardening do not by themselves establish production readiness. Authentication, TLS termination, monitoring, backup/restore and load testing must be evaluated for a real deployment.
+
+CI currently runs on Python 3.11 and 3.12. The workflow and test output are the source of truth; a fixed test-count badge is not a coverage guarantee.
+
 ## 📌 Overview
 
-This repository provides a production-grade, containerized microservices architecture for a digital library management system built with **Docker Compose**, **FastAPI**, **PostgreSQL**, and **Nginx**.
+This repository provides a containerized microservices architecture for an academic project for a digital library management system built with **Docker Compose**, **FastAPI**, **PostgreSQL**, and **Nginx**.
 
 The system is composed of three decoupled, domain-driven microservices:
 
@@ -26,7 +32,7 @@ The system is composed of three decoupled, domain-driven microservices:
 * `users_service`: Reader and user directory administration.
 * `orders_service`: Book checkout and order tracking linking readers with books.
 
-All services run inside isolated Docker containers connected through private internal networks. The PostgreSQL database is completely shielded from the public host network, while **Nginx** acts as an edge **API Gateway** and reverse proxy, exposing a single secure entrypoint to the host.
+All services run inside isolated Docker containers connected through private internal networks. The PostgreSQL database is completely shielded from the public host network, while **Nginx** acts as an edge **API Gateway** and reverse proxy, exposing a single HTTP entrypoint to the host.
 
 Key highlights include **full CRUD workflows**, automated **Swagger UI** documentation, persistent data storage via Docker named volumes, hardened container security (`read_only`, `cap_drop: ALL`, non-root execution), a 46-test automated test suite, and a continuous integration (CI) pipeline running across multiple Python versions.
 
@@ -86,7 +92,7 @@ Client / Frontend / curl
 ```
 
 * **Single Host Exposure**: Only port `8080` (Nginx) is mapped to the host machine.
-* **Network Isolation**: Microservices and the PostgreSQL database do not expose any ports to the host, neutralizing direct external attack vectors.
+* **Network Isolation**: Microservices and the PostgreSQL database do not expose any ports to the host, reducing direct host exposure.
 * **Resilience**: Application containers dynamically await PostgreSQL's healthy state before executing initialization routines.
 
 ---
@@ -96,7 +102,7 @@ Client / Frontend / curl
 ```text
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                 # GitHub Actions CI matrix (Python 3.11, 3.12, 3.13)
+│       └── ci.yml                 # GitHub Actions CI matrix (Python 3.11, 3.12)
 ├── books_service/
 │   ├── .dockerignore              # Docker build context exclusions
 │   ├── app.py                     # FastAPI routes, schemas, and DB connection logic
@@ -415,7 +421,7 @@ SELECT * FROM orders;
 
 ## 🛡️ Security & DevOps Best Practices
 
-* **Principio of Least Privilege**: Application containers create and run under an unprivileged user (`appuser`).
+* **Principle of Least Privilege**: Application containers create and run under an unprivileged user (`appuser`).
 * **Container Hardening**:
   * `read_only: true`: Containers mount root filesystems in read-only mode.
   * `cap_drop: - ALL`: Drops all Linux kernel capabilities.
@@ -456,7 +462,7 @@ ruff check .
 ```
 
 ### GitHub Actions CI Workflow
-Every push and pull request to `main` executes the automated CI pipeline across **Python 3.11, 3.12, and 3.13** on Ubuntu runners.
+Every push and pull request to `main` executes the automated CI pipeline across **Python 3.11 and 3.12** on Ubuntu runners.
 
 ---
 
@@ -483,9 +489,9 @@ docker compose up --build --force-recreate -d
 
 ## 👨‍💻 Author
 
-**David Alejandro Cruz Palacios**  
-Computer Science Engineering Student — Universidad Politécnica Salesiana  
-GitHub: [@aledash3](https://github.com/aledash3)  
+**David Alejandro Cruz Palacios**
+Computer Science Engineering Student — Universidad Politécnica Salesiana
+GitHub: [@aledash3](https://github.com/aledash3)
 Course: Distributed Systems (6th Semester)
 
 ---
