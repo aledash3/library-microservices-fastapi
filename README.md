@@ -1,20 +1,18 @@
-<div align="center">
-
 # 🐳 Library Microservices: FastAPI, PostgreSQL & Nginx with Docker Compose
 
-**Enterprise-ready microservices architecture featuring FastAPI, PostgreSQL persistence, Nginx API Gateway routing, and isolated Docker Compose networks.**
+[![CI](https://img.shields.io/github/actions/workflow/status/aledash3/library-microservices-fastapi/ci.yml?branch=main&style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/aledash3/library-microservices-fastapi/actions)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Nginx](https://img.shields.io/badge/Nginx-API%20Gateway-009639?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org/)
+[![Tests](https://img.shields.io/badge/Tests-46%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![Español](https://img.shields.io/badge/Idioma-Espa%C3%B1ol-orange?style=for-the-badge)](README.es.md)
 
-[![CI](https://github.com/aledash3/biblioteca-microservicios-dockerizada/actions/workflows/ci.yml/badge.svg)](https://github.com/aledash3/biblioteca-microservicios-dockerizada/actions)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
-[![Nginx](https://img.shields.io/badge/Nginx-API%20Gateway-009639?logo=nginx&logoColor=white)](https://nginx.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+Enterprise-ready microservices architecture featuring FastAPI, PostgreSQL persistence, Nginx API Gateway routing, and isolated Docker Compose networks.
 
-[English](README.md) • [Español](README.es.md)
-
-</div>
+> 🌐 **Language / Idioma:** English | [Leer documentación en Español](README.es.md)
 
 ---
 
@@ -53,6 +51,10 @@ Design, implement, and orchestrate a secure, modular, and containerized microser
 ---
 
 ## 🧱 System Architecture
+
+<p align="center">
+  <img src="docs/assets/architecture.svg" alt="Library Microservices Architecture Topology" width="100%">
+</p>
 
 The architecture follows a microservices pattern with a single perimeter gateway:
 
@@ -279,8 +281,8 @@ You can explore schemas and trigger live HTTP requests directly from your browse
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/aledash3/biblioteca-microservicios-dockerizada.git
-cd biblioteca-microservicios-dockerizada
+git clone https://github.com/aledash3/library-microservices-fastapi.git
+cd library-microservices-fastapi
 ```
 
 ### 2. Configure Environment Variables
@@ -430,6 +432,10 @@ SELECT * FROM orders;
 
 ## 🧪 Automated Testing & Continuous Integration (CI)
 
+<p align="center">
+  <img src="docs/assets/test_preview.svg" alt="Automated Test Suite Summary" width="100%">
+</p>
+
 The repository includes an extensive suite of **46 unit and integration tests** verifying:
 * Endpoint availability and HTTP response contracts.
 * Pydantic schema constraints and validation errors.
@@ -478,10 +484,9 @@ docker compose up --build --force-recreate -d
 ## 👨‍💻 Author
 
 **David Alejandro Cruz Palacios**  
-* Computer Science  
-* Universidad Politécnica Salesiana  
-* Quito, Ecuador  
-* GitHub: [@aledash3](https://github.com/aledash3)
+Computer Science Engineering Student — Universidad Politécnica Salesiana  
+GitHub: [@aledash3](https://github.com/aledash3)  
+*Course: Sistemas Distribuidos (6to Nivel)*
 
 ---
 
