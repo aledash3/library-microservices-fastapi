@@ -489,9 +489,9 @@ docker compose up --build --force-recreate -d
 
 ## 👨‍💻 Author
 
-**David Alejandro Cruz Palacios**
-Computer Science Engineering Student — Universidad Politécnica Salesiana
-GitHub: [@aledash3](https://github.com/aledash3)
+**David Alejandro Cruz Palacios**  
+Computer Science Engineering Student — Universidad Politécnica Salesiana  
+GitHub: [@aledash3](https://github.com/aledash3)  
 Course: Distributed Systems (6th Semester)
 
 ---
